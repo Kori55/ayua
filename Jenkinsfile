@@ -6,14 +6,14 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Preparando proyecto Flask...'
-                bat 'python -m pip install -r requirements.txt'
+                bat 'py -m pip install -r requirements.txt'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Ejecutando pruebas unitarias...'
-                bat 'python -m pytest -v'
+                bat 'py -m pytest -v'
             }
         }
 
