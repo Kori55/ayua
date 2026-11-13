@@ -2,6 +2,12 @@ pipeline {
     agent any
 
     stages {
+	stage('Verificar Python') {
+		steps {
+			bat 'where python'
+			bat 'python --version'
+		}
+	}
 
         stage('Build') {
             steps {
