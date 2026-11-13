@@ -33,8 +33,32 @@ pipeline {
         stage('Version Control') {
             steps {
                 echo 'Preparando documentacion para Git...'
+
+                bat 'git rm -r --cached --ignore-unmatch __pycache__'
                 bat 'git add -f docs/html'
-                bat 'git status'
+                bat 'git add .gitignore'
+
+                script {
+                    def cambios = bat(
+                        script: 'git diff --cached --quiet',
+                        returnStatus: true
+                    )
+
+                    if (cambios != 0) {
+                        bat 'git config user.name "Jenkins"'
+                        bat 'git config user.email "jenkins@localhost"'
+                        bat 'git commit -m "Actualizar documentacion generada"'
+
+                        withCredentials([gitUsernamePassword(
+                            credentialsId: 'github-ayua',
+                            gitToolName: 'Default'
+                        )]) {
+                            bat 'git push origin HEAD:main'
+                        }
+                    } else {
+                        echo 'No hay cambios nuevos en la documentacion.'
+                    }
+                }
             }
         }
 
